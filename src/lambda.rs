@@ -10,7 +10,7 @@ use tokio::runtime::Runtime;
 pub fn invoke_lambda_function(
     function_name: String,
     payload: String,
-    endpoint_url: String,
+    endpoint_url: Option<String>,
 ) -> bool {
     Runtime::new()
         .unwrap()
@@ -21,7 +21,7 @@ pub fn invoke_lambda_function(
 async fn ainvoke_lambda_function(
     function_name: String,
     payload: String,
-    endpoint_url: String,
+    endpoint_url: Option<String>,
 ) -> bool {
     let client = get_client(endpoint_url).await;
 
@@ -29,19 +29,21 @@ async fn ainvoke_lambda_function(
         .invoke()
         .function_name(function_name)
         .payload(Blob::new(payload))
-        .invocation_type(InvocationType::RequestResponse)
+        .invocation_type(InvocationType::Event)
         .send()
         .await
         .is_ok()
 }
 
 /// Get the Lambda client using environment variables
-async fn get_client(endpoint_url: String) -> Client {
+async fn get_client(endpoint_url: Option<String>) -> Client {
     let region = RegionProviderChain::default_provider().or_else("us-east-1");
-    let config = aws_config::from_env()
-        .endpoint_url(endpoint_url)
-        .region(region)
-        .load()
-        .await;
+    let mut params = aws_config::from_env().region(region);
+
+    if let Some(url) = endpoint_url {
+        params = params.endpoint_url(url);
+    }
+
+    let config = params.load().await;
     Client::new(&config)
 }
