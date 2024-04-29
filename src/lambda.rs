@@ -29,7 +29,7 @@ async fn ainvoke_lambda_function(
         .invoke()
         .function_name(function_name)
         .payload(Blob::new(payload))
-        .invocation_type(InvocationType::Event)
+        .invocation_type(InvocationType::RequestResponse)
         .send()
         .await
         .is_ok()
