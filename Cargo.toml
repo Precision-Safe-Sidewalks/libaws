@@ -1,10 +1,10 @@
 [package]
-name = "libaws"
+name = "libpss-aws"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "libaws"
+name = "libpss_aws"
 crate-type = ["cdylib"]
 
 [dependencies]

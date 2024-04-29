@@ -3,7 +3,7 @@ requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "libaws"
+name = "libpss-aws"
 version = "0.1.0"
 description = ""
 
@@ -13,7 +13,7 @@ Issues = "https://github.com/precision-safe-sidewalks/libaws/issues"
 
 [tool.maturin]
 python-source = "python"
-module-name = "libaws.libaws"
+module-name = "libpss_aws.libpss_aws"
 bindings = "pyo3"
 features = ["pyo3/extension-module"]
 

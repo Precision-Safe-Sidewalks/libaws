@@ -52,7 +52,7 @@ async fn get_s3_client() -> aws_sdk_s3::Client {
 }
 
 #[pymodule]
-fn libaws(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn libpss_aws(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(check_exists, m)?)?;
     m.add_function(wrap_pyfunction!(upload_file, m)?)?;
 
