@@ -11,10 +11,11 @@ pub fn invoke_lambda_function(
     function_name: String,
     payload: String,
     endpoint_url: Option<String>,
+    wait: Option<bool>,
 ) -> bool {
-    Runtime::new()
-        .unwrap()
-        .block_on(async { ainvoke_lambda_function(function_name, payload, endpoint_url).await })
+    Runtime::new().unwrap().block_on(async {
+        ainvoke_lambda_function(function_name, payload, endpoint_url, wait).await
+    })
 }
 
 /// Invoke a Lambda function asynchronously
@@ -22,14 +23,23 @@ async fn ainvoke_lambda_function(
     function_name: String,
     payload: String,
     endpoint_url: Option<String>,
+    wait: Option<bool>,
 ) -> bool {
     let client = get_client(endpoint_url).await;
+
+    let mut invocation_type = InvocationType::RequestResponse;
+
+    if let Some(wait) = wait {
+        if !wait {
+            invocation_type = InvocationType::Event;
+        }
+    }
 
     client
         .invoke()
         .function_name(function_name)
         .payload(Blob::new(payload))
-        .invocation_type(InvocationType::RequestResponse)
+        .invocation_type(invocation_type)
         .send()
         .await
         .is_ok()
